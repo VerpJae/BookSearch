@@ -57,7 +57,7 @@ class MainRvAdapter(val context: Context, val bookList: ArrayList<Book>) :
             /* 나머지 TextView와 String 데이터를 연결한다. */
             bookName?.text = book.bName
             bookNumb?.text = book.bNumb
-            bookRental?.text = if(book.bRental == "true") "대여가능" else "대여불가"
+            bookRental?.text = if(book.bRental != "대출가능") "대출불가" else book.bRental
             bookWriter?.text = book.bWriter
             bookPublisher?.text = book.bPublisher
         }

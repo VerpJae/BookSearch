@@ -4,13 +4,11 @@ package com.verpjae.booksearch
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Rect
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -23,11 +21,10 @@ import com.google.android.gms.ads.MobileAds
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import org.json.JSONArray
-import org.json.JSONObject
-import org.jsoup.Jsoup
-import java.io.FileNotFoundException
 
+/*
+DEPRECATED
+ACTUALLY I CANT UNDERSTAND THESE CODE WELL .. LOL
 
 fun sans(arr: JSONArray): ArrayList<ArrayList<String>> {
     val result: ArrayList<ArrayList<String>> = arrayListOf(arrayListOf("책이름", "대여", "책 번호", "example", "지은이", "출판사"))
@@ -47,20 +44,39 @@ fun tost(Liist: ArrayList<Book>, re: ArrayList<ArrayList<String>>, adaptt: MainR
     adaptt.notifyDataSetChanged()
 }
 
+*/
+
+
 class MainActivity : AppCompatActivity() {
 
-    val list_of_items = arrayOf("서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남")
+    val list_of_items = SearchBook.area.keys.toList() // 지역 이름(도 단위) 리스트
 
     var bookList = arrayListOf<Book>(
-        Book("책이름", "대여", "책 번호", "example", "지은이", "출판사"),
+        Book("책이름", "대출", "책 번호", "example", "지은이", "출판사"),
         Book("어린왕자", "가능", "ㄱ 5678", "example", "생텍쥐페리", "출판사")
     )
+
+    fun adaptWithInfo(list: MutableList<*>, adapter: MainRvAdapter){
+        // 예시로 있는 두 권 삭제
+        bookList.clear()
+
+        for(book in list){
+            book as Map<*,*>
+            bookList.add(Book(book["title"] as String, book["canRental"] as String, book["callNumber"] as String, book["previewImage"] as String, book["writer"] as String, book["company"] as String))
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    // =============================
+    // 캐쉬 저장 및 권한 확인
+
     private fun saveCache(key: String, data: String) {
         val shared = getSharedPreferences("datalol", Context.MODE_PRIVATE)
         val editor = shared.edit()
         editor.putString(key, data)
         editor.apply()
     }
+
     private fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -93,6 +109,8 @@ class MainActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
+    // =============================
+
     lateinit var mAdView : AdView
 
     @SuppressLint("SetTextI18n")
@@ -108,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         mAdView.loadAd(adRequest)
 
 
+        // bookList와 어댑터 연결
         val mRecyclerView = findViewById<RecyclerView>(R.id.recyclerv)
         val mAdapter = MainRvAdapter(this, bookList)
         mRecyclerView.adapter = mAdapter
@@ -153,34 +172,40 @@ class MainActivity : AppCompatActivity() {
             else {
                 CoroutineScope(IO).launch {
                     //var res:String? = "BookList"
+                    /*
                     val parse =
                         Jsoup.connect("http://vz.kro.kr/book/?book=" + book.getText() + "&school=" + school.getText() + "&local=" + local.selectedItem)
                             .ignoreContentType(true).get().text()
-                    val json = JSONObject(parse)
-                    if (json.getString("status") == "success") {
-                        val schoolName = json.getString("schoolName")
-                        val bresult: JSONArray = json.getJSONArray("result")
-                        val ress = sans(bresult)
+                    */
+                    val parse = SearchBook.searchBookFromSchoolName(local.selectedItem.toString(), book.text.toString(), school.text.toString())
+
+                    if (parse["status"] == "success") {
+                        val schoolName = parse["schoolName"]
+                        val bresult = parse["result"] as MutableList<*>
+                        println(bresult)
                         CoroutineScope(Main).launch {
                             delay(50)
                             textView.setTextColor(Color.parseColor("#3fd467"))
                             textView.text = "성공 - $schoolName"
-                            tost(bookList, ress, mAdapter)
+                            adaptWithInfo(bresult, mAdapter)
                         }
                     } else {
-                        val ress = json.getString("result")
+                        val ress = parse["result"] as String
 
                         CoroutineScope(Main).launch {
                             delay(50)
                             bookList.clear()
-                            bookList.add(Book("책이름", "대여", "책 번호", "example", "지은이", "출판사"))
+                            bookList.add(Book("책이름", "대출", "책 번호", "example", "지은이", "출판사"))
                             mAdapter.notifyDataSetChanged()
+
+                            // textView 는 오류메시지 띄울 공간
                             textView.setTextColor(Color.parseColor("#ff2424"))
-                            if (json.has("schoolName")) {
-                                val schoolName = json.getString("schoolName")
+                            if (parse.contains("schoolName")) {
+                                val schoolName = parse["schoolName"]
                                 textView.text = "$schoolName - $ress"
-                            } else
+                            } else { // 오류 내용
                                 textView.text = ress
+                            }
                         }
                     }
                 }

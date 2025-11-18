@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="115dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="4dp"
+    android:background="@drawable/item_border">
+
+    <ImageView
+        android:id="@+id/bookPhotoImg"
+        android:layout_width="64dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/testbook" />
+
+    <TextView
+        android:id="@+id/bookNameTv"
+        android:layout_width="300dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="#242424"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.053"
+        app:layout_constraintStart_toEndOf="@+id/bookPhotoImg"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Name" />
+
+    <TextView
+        android:id="@+id/bookNumbTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textColor="#d54dff"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bookPhotoImg"
+        app:layout_constraintTop_toBottomOf="@+id/bookNameTv"
+        app:layout_constraintVertical_bias="1.0"
+        tools:text="Number" />
+
+    <TextView
+        android:id="@+id/bookRentalTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="#ffbb4d"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bookNumbTv"
+        app:layout_constraintStart_toEndOf="@+id/bookNumbTv"
+        app:layout_constraintTop_toTopOf="@+id/bookNumbTv"
+        tools:text="Rental" />
+
+    <TextView
+        android:id="@+id/bookWriterTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333333"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/bookNameTv"
+        app:layout_constraintTop_toBottomOf="@+id/bookNameTv"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Writer" />
+
+    <TextView
+        android:id="@+id/bookPublisherTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#597591"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintStart_toEndOf="@+id/bookRentalTv"
+        app:layout_constraintTop_toTopOf="@+id/bookRentalTv"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Publisher" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
